@@ -55,9 +55,13 @@ router.get("/:id", async (req, res) => {
   try {
     const id = req.params.id;
     const product = await getProduct(id);
-    res.status(200).send(product);
+    if (product) {
+      res.status(200).send(product);
+    } else res.status(400).send("Product not Found");
   } catch (error) {
-    res.status(400).send("Product not Found");
+    res.status(400).send({
+      error: error._message,
+    });
   }
 });
 
@@ -88,6 +92,9 @@ router.delete("/:id", async (req, res) => {
   try {
     const id = req.params.id;
     await deleteProduct(id);
+    // if (product) {
+    //   res.status(200).send(product);
+    // } else res.status(400).send("Product not Found");
     res.status(200).send({
       message: `Product with the id #${id} has been succesfully deleted =) `,
     });
