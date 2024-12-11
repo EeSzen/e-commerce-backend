@@ -17,7 +17,7 @@ mongoose
     console.log("MongoDB is connected");
   })
   .catch((error) => {
-    console.log("MongoDB is not connected");
+    error("MongoDB is not connected");
   });
 
 // root route
