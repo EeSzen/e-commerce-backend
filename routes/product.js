@@ -20,7 +20,7 @@ router.get("/", async (req, res) => {
 
     const products = await getProducts(name, description, price, category);
     if (products.length === 0) {
-      return res.status(400).send("Can't get Products 2");
+      return res.status(400).send("Can't get Products");
     } else {
       res.status(200).send(products);
     }
