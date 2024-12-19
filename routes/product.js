@@ -17,13 +17,13 @@ router.get("/", async (req, res) => {
     const description = req.query.description;
     const price = req.query.price;
     const category = req.query.category;
+    const page = req.query.page;
+    const per_page = req.query.per_page;
 
-    const products = await getProducts(name, description, price, category);
-    if (products.length === 0) {
-      return res.status(400).send("Can't get Products");
-    } else {
+    const products = await getProducts(name, description, price, category, page , per_page);
+
       res.status(200).send(products);
-    }
+
   } catch (error) {
     res.status(400).send("Can't get Products");
   }

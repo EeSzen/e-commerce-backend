@@ -1,7 +1,14 @@
 const Product = require("../models/product");
 
 // get all product
-const getProducts = async (name, description, price, category) => {
+const getProducts = async (
+  name,
+  description,
+  price,
+  category,
+  page = 1,
+  per_page = 6
+) => {
   let filter = {};
 
   if (name) {
@@ -16,11 +23,14 @@ const getProducts = async (name, description, price, category) => {
     filter.price = { $gt: price };
   }
 
-  if (category) {
+  if (category && category !== "all") {
     filter.category = category;
   }
 
-  const products = await Product.find(filter);
+  const products = await Product.find(filter)
+    .limit(per_page)
+    .skip((page - 1) * per_page)
+    .sort({_id: -1});
   return products;
 };
 
@@ -69,5 +79,5 @@ module.exports = {
   addProduct,
   getProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
 };
