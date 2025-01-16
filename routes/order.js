@@ -9,6 +9,7 @@ const {
   updateOrder,
   deleteOrder,
 } = require("../controller/order");
+const { isValidUser, isAdmin } = require("../middleware/auth");
 
 /*
     GET /orders
@@ -19,7 +20,7 @@ const {
 */
 
 // create new order
-router.post("/", async (req, res) => {
+router.post("/", isValidUser, async (req, res) => {
   try {
     // const customerName = req.body.customerName;
     // const customerEmail = req.body.customerEmail;
@@ -41,24 +42,21 @@ router.post("/", async (req, res) => {
     res.status(200).send(newOrder);
   } catch (error) {
     res.status(400).send({
-      error: error.message,
+      error: error._message,
     });
   }
 });
 
 // get all orders
-router.get("/", async (req, res) => {
+router.get("/", isValidUser, async (req, res) => {
   try {
     console.log(req.query);
-    const { customerName, customerEmail, products, totalPrice } = req.query;
-    const allOrders = await getOrders(
-      customerName,
-      customerEmail,
-      products,
-      totalPrice
-    );
-    res.status(200).send(allOrders);
+    const email = req.user.email;
+    const role = req.user.role;
+    const orders = await getOrders(email, role);
+    res.status(200).send(orders);
   } catch (error) {
+    console.log(error);
     res.status(400).send({
       error: error._message,
     });
@@ -81,7 +79,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // delete order by id
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", isAdmin, async (req, res) => {
   try {
     const _id = req.params.id;
     await deleteOrder(_id);
@@ -97,7 +95,7 @@ router.delete("/:id", async (req, res) => {
 });
 
 // update order by id
-router.put("/:id", async (req, res) => {
+router.put("/:id", isAdmin, async (req, res) => {
   try {
     const _id = req.params.id;
     const status = req.body.status;

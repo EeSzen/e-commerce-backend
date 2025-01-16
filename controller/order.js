@@ -3,27 +3,48 @@ const axios = require("axios");
 const Order = require("../models/order");
 
 // get all the orders
-const getOrders = async (customerName, customerEmail, products, totalPrice) => {
+// const getOrders = async (
+//   customerName,
+//   customerEmail,
+//   products,
+//   totalPrice,
+//   email
+// ) => {
+//   let filter = {};
+
+//   // if is not admin, filter by customerEmail
+//   if (role !== "admin") {
+//     filter.customerEmail = email;
+//   }
+
+//   if (customerName) {
+//     filter.customerName = customerName;
+//   }
+
+//   // if (customerEmail) {
+//   //   filter.customerEmail = customerEmail;
+//   // }
+
+//   if (products) {
+//     filter.products = products;
+//   }
+
+//   if (totalPrice) {
+//     filter.totalPrice = totalPrice;
+//   }
+
+//   const orders = await Order.find(filter, { customerEmail: email }).sort({
+//     _id: -1,
+//   });
+//   return orders;
+// };
+const getOrders = async (email, role) => {
   let filter = {};
-
-  if (customerName) {
-    filter.customerName = customerName;
+  // if is not admin, filter by customerEmail
+  if (role !== "admin") {
+    filter.customerEmail = email;
   }
-
-  if (customerEmail) {
-    filter.customerEmail = customerEmail;
-  }
-
-  if (products) {
-    filter.products = products;
-  }
-
-  if (totalPrice) {
-    filter.totalPrice = totalPrice;
-  }
-
-  const orders = await Order.find(filter);
-  return orders;
+  return await Order.find(filter).sort({ _id: -1 });
 };
 
 // get on order

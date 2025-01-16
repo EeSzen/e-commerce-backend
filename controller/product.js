@@ -1,36 +1,18 @@
 const Product = require("../models/product");
 
 // get all product
-const getProducts = async (
-  name,
-  description,
-  price,
-  category,
-  page = 1,
-  per_page = 6
-) => {
+const getProducts = async (category, page = 1, per_page = 6) => {
   let filter = {};
-
-  if (name) {
-    filter.name = name;
-  }
-
-  if (description) {
-    filter.description = description;
-  }
-
-  if (price) {
-    filter.price = { $gt: price };
-  }
 
   if (category && category !== "all") {
     filter.category = category;
   }
 
   const products = await Product.find(filter)
+    .populate("category")
     .limit(per_page)
     .skip((page - 1) * per_page)
-    .sort({_id: -1});
+    .sort({ _id: -1 });
   return products;
 };
 
@@ -41,19 +23,20 @@ const getProduct = async (id) => {
 };
 
 // add one product
-const addProduct = async (name, description, price, category) => {
+const addProduct = async (name, description, price, category, image) => {
   const newProduct = new Product({
     name,
     description,
     price,
     category,
+    image,
   });
   await newProduct.save();
   return newProduct;
 };
 
 // update by id
-const updateProduct = async (id, name, description, price, category) => {
+const updateProduct = async (id, name, description, price, category, image) => {
   const updatedProduct = await Product.findByIdAndUpdate(
     id,
     {
@@ -61,6 +44,7 @@ const updateProduct = async (id, name, description, price, category) => {
       description,
       price,
       category,
+      image,
     },
     {
       new: true,
